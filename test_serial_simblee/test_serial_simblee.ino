@@ -4,7 +4,8 @@ void setup() {
   Serial.println("Starting");
 }
 
-int test = 10;
+//int test = 10;
+uint8_t test = 11;
 
 void loop() {
   Serial.println(test);

@@ -1,7 +1,8 @@
 // Receiver code from http://robotic-controls.com/learn/arduino/arduino-arduino-serial-communication
 
 //char str[4];
-int received = 0;
+//int received = 0;
+uint8_t received = 0;
 
 void setup() {
   Serial.begin(9600);
