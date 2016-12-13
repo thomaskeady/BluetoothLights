@@ -1,6 +1,7 @@
 // Receiver code from http://robotic-controls.com/learn/arduino/arduino-arduino-serial-communication
 
-char str[4];
+//char str[4];
+int received = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -12,13 +13,11 @@ void loop() {
 
   if (Serial.available()) {
     delay(100); //allows all serial sent to be received together
-    while(Serial.available() && i<3) {
-      str[i++] = Serial.read();
+    while(Serial.available()) {
+      received = Serial.read();
+      Serial.println(received);
     }
-    str[i++]='\0';
+    //Serial.println(received);
   }
 
-  if(i>0) {
-    Serial.println(str);
-  }
 }

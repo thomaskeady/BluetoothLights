@@ -4,8 +4,10 @@ void setup() {
   Serial.println("Starting");
 }
 
+int test = 10;
+
 void loop() {
-  Serial.println("Test");
+  Serial.println(test);
   delay(2000);
   
 }
