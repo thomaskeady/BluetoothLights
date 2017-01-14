@@ -1,3 +1,12 @@
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif
+
+#define PIN 6
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(150, PIN, NEO_GRB + NEO_KHZ800);
+
 
 uint8_t indicator = 0x00;
 uint8_t value = 0x00;
@@ -11,10 +20,14 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(57600);
 
-  pinMode(red, OUTPUT);
+  /*pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
-  pinMode(blue, OUTPUT);
-  
+  pinMode(blue, OUTPUT);*/
+
+  strip.setBrightness(64);
+
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
 }
 
 byte btype = 0;
@@ -24,9 +37,6 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() >= 3) {
     btype = Serial.read();
-    ctype = btype;
-    Serial.println(btype);
-    Serial.println(ctype);
     if (btype != 0xAA) {  // Not the sync byte
       // Serial.flush??
       while (Serial.available()) {
@@ -38,16 +48,31 @@ void loop() {
 
       switch (indicator) {
         case 0x01:  // Red
-          analogWrite(red, value);
+          //analogWrite(red, value);
+          colorFlash(strip.Color(255, 0, 0), 1500); // Red
           break;
         case 0x02:
-          analogWrite(green, value);
+          //analogWrite(green, value);
+          colorFlash(strip.Color(0, 255, 0), 1500); // Green
           break;
         case 0x03:
-          analogWrite(blue, value);
+          //analogWrite(blue, value);
+          colorFlash(strip.Color(0, 0, 255), 1500); // Blue
           break;
       }
       
     }
   }
 }
+
+void colorFlash(uint32_t c, uint8_t wait) {
+  for(uint16_t i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, c);
+  }
+  
+  strip.show();
+  delay(wait);
+}
+
+
+
