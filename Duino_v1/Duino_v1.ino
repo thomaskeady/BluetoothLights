@@ -17,10 +17,17 @@ void setup() {
   
 }
 
+byte btype = 0;
+char ctype = 0;
+
 void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() >= 3) {
-    if (Serial.read() != 0xAA) {  // Not the sync byte
+    btype = Serial.read();
+    ctype = btype;
+    Serial.println(btype);
+    Serial.println(ctype);
+    if (btype != 0xAA) {  // Not the sync byte
       // Serial.flush??
       while (Serial.available()) {
         Serial.read();
@@ -36,7 +43,7 @@ void loop() {
         case 0x02:
           analogWrite(green, value);
           break;
-        case 0x02:
+        case 0x03:
           analogWrite(blue, value);
           break;
       }

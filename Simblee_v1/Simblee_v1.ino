@@ -46,9 +46,9 @@ void setup() {
 
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
-  greenLedOn();
+  redLedOn();
 
-  Serial.begin(56700);  // Pretty sure this is good
+  Serial.begin(57600);  // Pretty sure this is good
 
   SimbleeForMobile.advertisementData = "Lights";
 
@@ -128,7 +128,7 @@ void ui()
 
 uint8_t RED_INDICATOR = 0x01;
 uint8_t GREEN_INDICATOR = 0x02;
-uint8_t BLE_INDICATOR = 0x03;
+uint8_t BLUE_INDICATOR = 0x03;
 
 void update()
 {
