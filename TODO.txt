@@ -1,0 +1,13 @@
+Todos for the lights:
+
+Reset arduino from Simblee because sometimes it becomes unresponsive
+	Use RST pin
+	Is problem from serial not clearing entirely?
+
+How reprogram arduino without breaking connections between it and simblee? 
+	I think this is fine, arduino RX should never output anything
+	BUT WHEN IT IS DRIVEN FROM THE USB IT WILL BE 5V - therefore no good
+	
+
+
+

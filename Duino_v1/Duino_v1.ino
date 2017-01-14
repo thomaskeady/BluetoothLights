@@ -41,6 +41,8 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() >= 3) {
     btype = Serial.read();
+    Serial.print(btype, BIN);
+    Serial.print(" ");
     if (btype != 0xAA) {  // Not the sync byte
       // Serial.flush??
       while (Serial.available()) {
@@ -49,6 +51,10 @@ void loop() {
     } else {  // Is the sync byte
       indicator = Serial.read();  // 2nd byte
       value = Serial.read();  // 3rd byte
+
+      Serial.print(indicator, BIN);
+      Serial.print(" ");
+      Serial.println(value, BIN);
 
       switch (indicator) {
         case 0x01:  // Red
