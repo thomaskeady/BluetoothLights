@@ -33,6 +33,10 @@ void setup() {
 byte btype = 0;
 char ctype = 0;
 
+byte r = 0;
+byte g = 0;
+byte b = 0;
+
 void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() >= 3) {
@@ -49,17 +53,22 @@ void loop() {
       switch (indicator) {
         case 0x01:  // Red
           //analogWrite(red, value);
-          colorFlash(strip.Color(255, 0, 0), 1500); // Red
+          //colorFlash(strip.Color(255, 0, 0), 1500); // Red
+          r = value;
           break;
         case 0x02:
           //analogWrite(green, value);
-          colorFlash(strip.Color(0, 255, 0), 1500); // Green
+          //colorFlash(strip.Color(0, 255, 0), 1500); // Green
+          g = value;
           break;
         case 0x03:
           //analogWrite(blue, value);
-          colorFlash(strip.Color(0, 0, 255), 1500); // Blue
+          //colorFlash(strip.Color(0, 0, 255), 1500); // Blue
+          b = value;
           break;
       }
+
+      colorFlash(strip.Color(r, g, b), 10);
       
     }
   }
