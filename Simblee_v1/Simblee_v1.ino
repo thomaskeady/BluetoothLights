@@ -1,5 +1,5 @@
 /*
-Based off of ColorWheel 
+Based off of ColorWheel
 
 This sketch is used with SimbleeForMobile.  The sketch will maintain
 the color selected when disconnected, and can be easily
@@ -25,7 +25,32 @@ modified when reconnected.
 
 #define RED_LED 2
 #define GREEN_LED 3
+
+#define NONE 0x00
+#define RAINBOW_TIME 0x01
+#define RAINBOW_SPACE 0x02
+#define FLASH_COLOR 0x03
+#define FLASH_RAINBOW 0x04
+#define FLASH_RANDOM 0x05
+#define PULSE 0x06
+#define THEATER_CHASE 0x07
+#define CHRISTMAS 0x08
+#define FLICKER 0x09
+
+
 uint8_t SYNC_BYTE = 0xAA;
+
+///////////////////////////////////////////// // Communication variables
+
+byte STYLE = 0x00;      // What pattern:
+byte BRIGHTNESS = 0x00; //
+byte RATE = 0x00;       // How fast
+byte SIZE = 0x00;       // How large
+byte COLOR = 0x00;      // What color
+
+
+///////////////////////////////////////////// // End communication variables
+
 
 // Color variables (start with all blank)
 uint8_t red = 0x00;
@@ -63,7 +88,7 @@ void loop() {
   // todo: Simblee_ULPDelay(INFINITE);
 
   // process must be called in the loop for SimbleeForMobile
-  SimbleeForMobile.process();  
+  SimbleeForMobile.process();
 }
 
 uint8_t rtextfield;
@@ -87,12 +112,12 @@ void update();
 
 void ui()
 {
-  color_t darkgray = rgb(85,85,85);
-  
+  color_t darkgray = rgb(85, 85, 85);
+
   SimbleeForMobile.beginScreen(darkgray);
 
   // put the controls at the top, so the keyboard doesn't cover them up
-  
+
   SimbleeForMobile.drawText(25, 71, "R:", WHITE);
   rslider = SimbleeForMobile.drawSlider(55, 65, 175, 0, 255);
   rtextfield = SimbleeForMobile.drawTextField(245, 65, 50, 255, "", WHITE, darkgray);
@@ -104,7 +129,7 @@ void ui()
   SimbleeForMobile.drawText(25, 161, "B:", WHITE);
   bslider = SimbleeForMobile.drawSlider(55, 155, 175, 0, 255);
   btextfield = SimbleeForMobile.drawTextField(245, 155, 50, 255, "", WHITE, darkgray);
-  
+
   // border
   SimbleeForMobile.drawRect(25, 200, 270, 40, WHITE);
   swatch = SimbleeForMobile.drawRect(26, 201, 268, 38, WHITE);
@@ -112,9 +137,9 @@ void ui()
   color_wheel = SimbleeForMobile.drawImage(COLOR_WHEEL, 10, 250);
 
   SimbleeForMobile.setEvents(color_wheel, EVENT_COLOR);
-  
+
   // todo; color swatch
-  
+
   SimbleeForMobile.endScreen();
 
   // populate with the current red/green/blue values
@@ -143,7 +168,7 @@ void update()
   Serial.write(SYNC_BYTE);
   Serial.write(BLUE_INDICATOR);
   Serial.write(blue);
-    
+
   SimbleeForMobile.updateValue(rslider, red);
   SimbleeForMobile.updateValue(rtextfield, red);
 
@@ -152,8 +177,8 @@ void update()
 
   SimbleeForMobile.updateValue(bslider, blue);
   SimbleeForMobile.updateValue(btextfield, blue);
-  
-  SimbleeForMobile.updateColor(swatch, rgb(red,green,blue));
+
+  SimbleeForMobile.updateColor(swatch, rgb(red, green, blue));
 }
 
 void ui_event(event_t &event)
@@ -170,6 +195,6 @@ void ui_event(event_t &event)
     green = event.value;
   else if (event.id == bslider || event.id == btextfield)
     blue = event.value;
-    
+
   update();
 }
