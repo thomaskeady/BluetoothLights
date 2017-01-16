@@ -10,4 +10,7 @@ How reprogram arduino without breaking connections between it and simblee?
 	
 
 
+Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avrdude -C/Applications/Arduino.app/Contents/Java/hardware/tools/avr/etc/avrdude.conf -v -patmega328p -carduino -P"/dev/cu.wch ch341 USB=>RS232 1410" -b57600 -D -Uflash:w:/var/folders/ws/j0p6c6dn5b14q4bngjfgxv0w0000gn/T/buildd5ae82e677127ac286f51de66781d807.tmp/Blink.ino.hex:i 
 
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avrdude -C/Applications/Arduino.app/Contents/Java/hardware/tools/avr/etc/avrdude.conf -v -patmega328p -carduino -P"/dev/cu.wch ch341 USB=>RS232 1410" -b57600 -D -Uflash:w:/var/folders/ws/j0p6c6dn5b14q4bngjfgxv0w0000gn/T/build29312eff16e4c7d1339731b3dc52007e.tmp/NeoPixel.ino.hex:i 

@@ -314,8 +314,10 @@ void setup()
   myStrip.begin();
 
   // Kick off a pattern
-  myStrip.TheaterChase(myStrip.Color(255, 255, 0), myStrip.Color(0, 0, 50), 100);
-
+  //myStrip.TheaterChase(myStrip.Color(255, 255, 0), myStrip.Color(0, 0, 50), 100);
+  //myStrip.ColorWipe(myStrip.Color(255, 255, 255), 100);
+  myStrip.Scanner(myStrip.Color(255, 255, 255), 50);
+  //myStrip.Fade(myStrip.Color(0, 0, 0), myStrip.Color(255, 255, 255), 50, 50);
 
 }
 
