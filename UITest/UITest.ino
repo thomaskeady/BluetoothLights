@@ -114,6 +114,7 @@ uint8_t fRandom_but;
 uint8_t candle_but;
 uint8_t theater_but;
 uint8_t christmas_but;
+uint8_t scanner_but;
 
 void loop() {
   // todo: delay_until_button(HIGH);
@@ -160,30 +161,30 @@ void ui()
    * 60 px buffer from top of screen, 45px between button layers
    */
 
-  /*off_but =          SimbleeForMobile.drawButton(10, 60, 93, "OFF", BLACK);
+  off_but =          SimbleeForMobile.drawButton(10, 60, 93, "OFF", BLACK);
   solid_but =        SimbleeForMobile.drawButton(113, 60, 94, "Solid", BLACK);
-  pulse_but =        SimbleeForMobile.drawButton(217, 60, 93, "Pulse", BLACK);*/
+  pulse_but =        SimbleeForMobile.drawButton(217, 60, 93, "Pulse", BLACK);
 
-  off_but =          SimbleeForMobile.drawButton(10, 60, 67, "OFF", BLACK);
-  solid_but =        SimbleeForMobile.drawButton(87, 60, 67, "Solid", BLACK);
-  pulse_but =        SimbleeForMobile.drawButton(164, 60, 68, "Pulse", BLACK);
-  candle_but =       SimbleeForMobile.drawButton(242, 60, 68, "Candle", BLACK);
+  candle_but =       SimbleeForMobile.drawButton(10, 105, 93, "Candle", BLACK);
+  fColor_but =       SimbleeForMobile.drawButton(113, 105, 94, "Flash", BLACK);
+  scanner_but =      SimbleeForMobile.drawButton(217, 105, 93, "Scanner", BLACK);
   
-  rainbowTime_but =  SimbleeForMobile.drawButton(10, 105, 145, "Time Rainbow", BLACK);
-  rainbowSpace_but = SimbleeForMobile.drawButton(165, 105, 145, "Space Rainbow", BLACK);
-//  fColor_but =       SimbleeForMobile.drawButton(10, 150, 145, "Flash Color", BLACK);
+  rainbowTime_but =  SimbleeForMobile.drawButton(10, 150, 145, "Time Rainbow", BLACK);
+  rainbowSpace_but = SimbleeForMobile.drawButton(165, 150, 145, "Space Rainbow", BLACK);
+  
 //  fRainbow_but =     SimbleeForMobile.drawButton(165, 150, 145, "Flash Rainbow", BLACK);
 //  fRandom_but =      SimbleeForMobile.drawButton(10, 195, 145, "Flash Random", BLACK);
+
+  christmas_but =    SimbleeForMobile.drawButton(10, 195, 145, "Christmas", BLACK);
+  theater_but =      SimbleeForMobile.drawButton(165, 195, 145, "Theater Chase", BLACK);
   
-  theater_but =      SimbleeForMobile.drawButton(10, 240, 145, "Theater Chase", BLACK);
-  christmas_but =    SimbleeForMobile.drawButton(165, 240, 145, "Christmas", BLACK);
   
   SimbleeForMobile.setEvents(off_but,          EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(solid_but,        EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(pulse_but,        EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(rainbowTime_but,  EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(rainbowSpace_but, EVENT_PRESS | EVENT_RELEASE);
-//  SimbleeForMobile.setEvents(fColor_but,       EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(fColor_but,       EVENT_PRESS | EVENT_RELEASE);
 //  SimbleeForMobile.setEvents(fRainbow_but,     EVENT_PRESS | EVENT_RELEASE);
 //  SimbleeForMobile.setEvents(fRandom_but,      EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(candle_but,       EVENT_PRESS | EVENT_RELEASE);
@@ -201,4 +202,10 @@ void ui_event(event_t &event)
     else if (event.type == EVENT_RELEASE)
       digitalWrite(led, LOW);
 }
+
+/*  // Not the actual thing lol oops
+void send_change(byte indicator, byte value) {
+  Serial.write(
+}
+*/
 

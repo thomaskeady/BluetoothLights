@@ -25,6 +25,7 @@ modified when reconnected.
 
 #define RED_LED 2
 #define GREEN_LED 3
+#define BLUE_LED 4
 
 #define NONE 0x00
 #define RAINBOW_TIME 0x01
@@ -42,11 +43,11 @@ uint8_t SYNC_BYTE = 0xAA;
 
 ///////////////////////////////////////////// // Communication variables
 
-byte STYLE = 0x00;      // What pattern:
-byte BRIGHTNESS = 0x00; //
-byte RATE = 0x00;       // How fast
-byte SIZE = 0x00;       // How large
-byte COLOR = 0x00;      // What color
+byte PATTERN = 0x00;      // What pattern:
+byte BRIGHTNESS = 0x01; //
+byte RATE = 0x02;       // How fast
+byte SIZE = 0x03;       // How large
+byte COLOR = 0x04;      // What color
 
 
 ///////////////////////////////////////////// // End communication variables
@@ -71,6 +72,8 @@ void setup() {
 
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
+  pinMode(BLUE_LED, OUTPUT);
+
   redLedOn();
 
   Serial.begin(57600);  // Pretty sure this is good
@@ -91,14 +94,18 @@ void loop() {
   SimbleeForMobile.process();
 }
 
-uint8_t rtextfield;
-uint8_t rslider;
-uint8_t gtextfield;
-uint8_t gslider;
-uint8_t btextfield;
-uint8_t bslider;
-uint8_t swatch;
-uint8_t color_wheel;
+uint8_t off_but;
+uint8_t solid_but;
+uint8_t pulse_but;
+uint8_t rainbowTime_but;
+uint8_t rainbowSpace_but;
+uint8_t fColor_but;
+uint8_t fRainbow_but;
+uint8_t fRandom_but;
+uint8_t candle_but;
+uint8_t theater_but;
+uint8_t christmas_but;
+uint8_t scanner_but;
 
 void SimbleeForMobile_onConnect() {
   greenLedOn();
@@ -112,89 +119,103 @@ void update();
 
 void ui()
 {
-  color_t darkgray = rgb(85, 85, 85);
-
-  SimbleeForMobile.beginScreen(darkgray);
+  SimbleeForMobile.beginScreen(GRAY);
 
   // put the controls at the top, so the keyboard doesn't cover them up
+  /*
+     * Two buttons per row: left x coord: 10, right x coord: 165
+     *  Width: 145, 145
+     * Three buttons per row: left x: 10, center x: 113, right: 217
+     *  Width: 93, 94, 93
+     * Four buttons per row: left x: 10, center-left x: 87, center-right: 164, right: 242
+     *  Width: 67, 67, 68, 68
+     *
+     * 60 px buffer from top of screen, 45px between button layers
+     */
 
-  SimbleeForMobile.drawText(25, 71, "R:", WHITE);
-  rslider = SimbleeForMobile.drawSlider(55, 65, 175, 0, 255);
-  rtextfield = SimbleeForMobile.drawTextField(245, 65, 50, 255, "", WHITE, darkgray);
+  off_but =          SimbleeForMobile.drawButton(10, 60, 93, "OFF", BLACK);
+  solid_but =        SimbleeForMobile.drawButton(113, 60, 94, "Solid", BLACK);
+  pulse_but =        SimbleeForMobile.drawButton(217, 60, 93, "Pulse", BLACK);
 
-  SimbleeForMobile.drawText(25, 116, "G:", WHITE);
-  gslider = SimbleeForMobile.drawSlider(55, 110, 175, 0, 255);
-  gtextfield = SimbleeForMobile.drawTextField(245, 110, 50, 255, "", WHITE, darkgray);
+  candle_but =       SimbleeForMobile.drawButton(10, 105, 93, "Candle", BLACK);
+  fColor_but =       SimbleeForMobile.drawButton(113, 105, 94, "Flash", BLACK);
+  scanner_but =      SimbleeForMobile.drawButton(217, 105, 93, "Scanner", BLACK);
 
-  SimbleeForMobile.drawText(25, 161, "B:", WHITE);
-  bslider = SimbleeForMobile.drawSlider(55, 155, 175, 0, 255);
-  btextfield = SimbleeForMobile.drawTextField(245, 155, 50, 255, "", WHITE, darkgray);
+  rainbowTime_but =  SimbleeForMobile.drawButton(10, 150, 145, "Time Rainbow", BLACK);
+  rainbowSpace_but = SimbleeForMobile.drawButton(165, 150, 145, "Space Rainbow", BLACK);
 
-  // border
-  SimbleeForMobile.drawRect(25, 200, 270, 40, WHITE);
-  swatch = SimbleeForMobile.drawRect(26, 201, 268, 38, WHITE);
+  //  fRainbow_but =     SimbleeForMobile.drawButton(165, 150, 145, "Flash Rainbow", BLACK);
+  //  fRandom_but =      SimbleeForMobile.drawButton(10, 195, 145, "Flash Random", BLACK);
 
-  color_wheel = SimbleeForMobile.drawImage(COLOR_WHEEL, 10, 250);
+  christmas_but =    SimbleeForMobile.drawButton(10, 195, 145, "Christmas", BLACK);
+  theater_but =      SimbleeForMobile.drawButton(165, 195, 145, "Theater Chase", BLACK);
 
-  SimbleeForMobile.setEvents(color_wheel, EVENT_COLOR);
 
-  // todo; color swatch
+  SimbleeForMobile.setEvents(off_but,          EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(solid_but,        EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(pulse_but,        EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(rainbowTime_but,  EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(rainbowSpace_but, EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(fColor_but,       EVENT_PRESS | EVENT_RELEASE);
+  //  SimbleeForMobile.setEvents(fRainbow_but,     EVENT_PRESS | EVENT_RELEASE);
+  //  SimbleeForMobile.setEvents(fRandom_but,      EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(candle_but,       EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(theater_but,      EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(christmas_but,    EVENT_PRESS | EVENT_RELEASE);
 
   SimbleeForMobile.endScreen();
 
-  // populate with the current red/green/blue values
-  // (this must be done after endScreen() to force it to be done each time,
-  // otherwise the initial values will be populated from the cache)
-
-  // Put different buttons for different modes
-
-  update();
 }
 
-uint8_t RED_INDICATOR = 0x01;
-uint8_t GREEN_INDICATOR = 0x02;
-uint8_t BLUE_INDICATOR = 0x03;
-
-void update()
-{
-  // Here was where they do the updating in the orig, do it again here?
-  // Use Serial.write or Serial.write??
-  Serial.write(SYNC_BYTE);
-  Serial.write(RED_INDICATOR);
-  Serial.write(red);
-  Serial.write(SYNC_BYTE);  // Sending immediately will simply fill buffer, and be read off properly in order
-  Serial.write(GREEN_INDICATOR);
-  Serial.write(green);
-  Serial.write(SYNC_BYTE);
-  Serial.write(BLUE_INDICATOR);
-  Serial.write(blue);
-
-  SimbleeForMobile.updateValue(rslider, red);
-  SimbleeForMobile.updateValue(rtextfield, red);
-
-  SimbleeForMobile.updateValue(gslider, green);
-  SimbleeForMobile.updateValue(gtextfield, green);
-
-  SimbleeForMobile.updateValue(bslider, blue);
-  SimbleeForMobile.updateValue(btextfield, blue);
-
-  SimbleeForMobile.updateColor(swatch, rgb(red, green, blue));
-}
 
 void ui_event(event_t &event)
 {
-  if (event.id == color_wheel)
-  {
-    red = event.red;
-    green = event.green;
-    blue = event.blue;
-  }
-  else if (event.id == rslider || event.id == rtextfield)
-    red = event.value;
-  else if (event.id == gslider || event.id == gtextfield)
-    green = event.value;
-  else if (event.id == bslider || event.id == btextfield)
-    blue = event.value;
 
-  update();
+  if (event.type == EVENT_PRESS) {
+    if (event.id == off_but) {
+      digitalWrite(BLUE_LED, LOW);
+
+    } else if (event.id == solid_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == pulse_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == rainbowTime_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == rainbowSpace_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == fColor_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == fRainbow_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == fRandom_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == candle_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == theater_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == christmas_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    } else if (event.id == scanner_but) {
+      digitalWrite(BLUE_LED, HIGH);
+
+    }
+  }
+
 }
+
+void send_change(uint8_t indicator, uint8_t value) {
+  Serial.write(SYNC_BYTE);
+  Serial.write(indicator);
+  Serial.write(value);
+}
+
