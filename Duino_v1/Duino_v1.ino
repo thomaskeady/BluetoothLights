@@ -41,8 +41,8 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() >= 3) {
     btype = Serial.read();
-    Serial.print(btype, BIN);
-    Serial.print(" ");
+    /*Serial.print(btype, BIN);
+    Serial.print(" ");*/
     if (btype != 0xAA) {  // Not the sync byte
       // Serial.flush??
       while (Serial.available()) {
@@ -52,22 +52,22 @@ void loop() {
       indicator = Serial.read();  // 2nd byte
       value = Serial.read();  // 3rd byte
 
-      Serial.print(indicator, BIN);
+      /*Serial.print(indicator, BIN);
       Serial.print(" ");
-      Serial.println(value, BIN);
+      Serial.println(value, BIN);*/
 
       switch (indicator) {
-        case 0x01:  // Red
+        case 0x04:  // Red
           //analogWrite(red, value);
           //colorFlash(strip.Color(255, 0, 0), 1500); // Red
           r = value;
           break;
-        case 0x02:
+        case 0x05:
           //analogWrite(green, value);
           //colorFlash(strip.Color(0, 255, 0), 1500); // Green
           g = value;
           break;
-        case 0x03:
+        case 0x06:
           //analogWrite(blue, value);
           //colorFlash(strip.Color(0, 0, 255), 1500); // Blue
           b = value;
