@@ -141,23 +141,40 @@ void SimbleeForMobile_onDisconnect()
 
 void ui()
 {
-  SimbleeForMobile.beginScreen(WHITE);
+  SimbleeForMobile.beginScreen(GRAY); 
 
-    SimbleeForMobile.drawText(60, 90, ".");
+    //SimbleeForMobile.drawText(60, 90, ".");
 
   // I prefer the button style below, uncomment the line following for the original button style
   //  ui_button = SimbleeForMobile.drawButton(120, 180, 80, "Button");
   //SimbleeForMobile.drawButton(120, 180, 80, "Button", BLUE, TEXT_TYPE);
 
-  off_but =          SimbleeForMobile.drawButton(10, 60, 93, "OFF", BLUE);
+  /*
+   * Two buttons per row: left x coord: 10, right x coord: 165
+   *  Width: 145, 145
+   * Three buttons per row: left x: 10, center x: 113, right: 217
+   *  Width: 93, 94, 93
+   * Four buttons per row: left x: 10, center-left x: 87, center-right: 164, right: 242
+   *  Width: 67, 67, 68, 68
+   * 
+   * 60 px buffer from top of screen, 45px between button layers
+   */
+
+  /*off_but =          SimbleeForMobile.drawButton(10, 60, 93, "OFF", BLACK);
   solid_but =        SimbleeForMobile.drawButton(113, 60, 94, "Solid", BLACK);
-  pulse_but =        SimbleeForMobile.drawButton(217, 60, 93, "Pulse", BLACK);
+  pulse_but =        SimbleeForMobile.drawButton(217, 60, 93, "Pulse", BLACK);*/
+
+  off_but =          SimbleeForMobile.drawButton(10, 60, 67, "OFF", BLACK);
+  solid_but =        SimbleeForMobile.drawButton(87, 60, 67, "Solid", BLACK);
+  pulse_but =        SimbleeForMobile.drawButton(164, 60, 68, "Pulse", BLACK);
+  candle_but =       SimbleeForMobile.drawButton(242, 60, 68, "Candle", BLACK);
+  
   rainbowTime_but =  SimbleeForMobile.drawButton(10, 105, 145, "Time Rainbow", BLACK);
   rainbowSpace_but = SimbleeForMobile.drawButton(165, 105, 145, "Space Rainbow", BLACK);
-  fColor_but =       SimbleeForMobile.drawButton(10, 150, 145, "Flash Color", BLACK);
-  fRainbow_but =     SimbleeForMobile.drawButton(165, 150, 145, "Flash Rainbow", BLACK);
-  fRandom_but =      SimbleeForMobile.drawButton(10, 195, 145, "Flash Random", BLACK);
-  candle_but =       SimbleeForMobile.drawButton(165, 195, 145, "Candle", BLACK);
+//  fColor_but =       SimbleeForMobile.drawButton(10, 150, 145, "Flash Color", BLACK);
+//  fRainbow_but =     SimbleeForMobile.drawButton(165, 150, 145, "Flash Rainbow", BLACK);
+//  fRandom_but =      SimbleeForMobile.drawButton(10, 195, 145, "Flash Random", BLACK);
+  
   theater_but =      SimbleeForMobile.drawButton(10, 240, 145, "Theater Chase", BLACK);
   christmas_but =    SimbleeForMobile.drawButton(165, 240, 145, "Christmas", BLACK);
   
@@ -166,8 +183,9 @@ void ui()
   SimbleeForMobile.setEvents(pulse_but,        EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(rainbowTime_but,  EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(rainbowSpace_but, EVENT_PRESS | EVENT_RELEASE);
-  SimbleeForMobile.setEvents(fColor_but,       EVENT_PRESS | EVENT_RELEASE);
-  SimbleeForMobile.setEvents(fRainbow_but,     EVENT_PRESS | EVENT_RELEASE);
+//  SimbleeForMobile.setEvents(fColor_but,       EVENT_PRESS | EVENT_RELEASE);
+//  SimbleeForMobile.setEvents(fRainbow_but,     EVENT_PRESS | EVENT_RELEASE);
+//  SimbleeForMobile.setEvents(fRandom_but,      EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(candle_but,       EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(theater_but,      EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(christmas_but,    EVENT_PRESS | EVENT_RELEASE);

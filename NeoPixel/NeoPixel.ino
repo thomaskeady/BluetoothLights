@@ -316,7 +316,7 @@ void setup()
   // Kick off a pattern
   //myStrip.TheaterChase(myStrip.Color(255, 255, 0), myStrip.Color(0, 0, 50), 100);
   //myStrip.ColorWipe(myStrip.Color(255, 255, 255), 100);
-  myStrip.Scanner(myStrip.Color(255, 255, 255), 50);
+  //myStrip.Scanner(myStrip.Color(255, 255, 255), 50);
   //myStrip.Fade(myStrip.Color(0, 0, 0), myStrip.Color(255, 255, 255), 50, 50);
 
 }
@@ -360,6 +360,26 @@ void loop()
           // And update tbe stick
           Stick.Update();
       }*/
+
+  if (Serial.available() >= 3) {
+    btype = Serial.read();
+    if (btype != 0xAA) {  // Not the sync byte
+      // Serial.flush??
+      while (Serial.available()) {
+        Serial.read();
+      }
+    } else {  // Is the sync byte
+      indicator = Serial.read();  // 2nd byte
+      value = Serial.read();  // 3rd byte
+
+      switch (indicator) {
+        case 
+      }
+      
+
+
+    }
+  }
 }
 
 //------------------------------------------------------------
