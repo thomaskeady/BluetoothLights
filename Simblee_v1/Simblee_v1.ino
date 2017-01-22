@@ -23,11 +23,15 @@ modified when reconnected.
 
 #include <SimbleeForMobile.h>
 
+// Pins
 #define RED_LED 2
 #define GREEN_LED 3
 #define BLUE_LED 4
 
-#define NONE 0x00
+#define RESET_ARDUINO 6
+// End pins
+
+#define NO_PATTERN 0x00
 #define RAINBOW_TIME 0x01
 #define RAINBOW_SPACE 0x02
 #define FLASH_COLOR 0x03
@@ -38,7 +42,9 @@ modified when reconnected.
 #define CHRISTMAS 0x08
 #define CANDLE 0x09
 #define SOLID 0x0A
+#define SCAN 0x0B
 
+// IF EDIT THE ABOVE MAKE SURE TO CHANGE CORRESPONDING FILE AS WELL!!!
 
 uint8_t SYNC_BYTE = 0xAA;
 
@@ -78,6 +84,9 @@ void setup() {
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
+
+  pinMode(RESET_ARDUINO, OUTPUT);
+  digitalWrite(RESET_ARDUINO, HIGH);
 
   redLedOn();
 
@@ -123,6 +132,7 @@ uint8_t candle_but;
 uint8_t theater_but;
 uint8_t christmas_but;
 uint8_t scanner_but;
+uint8_t reset_arduino;
 
 uint8_t brightness_slider;
 uint8_t rate_slider;
@@ -179,6 +189,7 @@ void ui()
   SimbleeForMobile.setEvents(candle_but,       EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(theater_but,      EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(christmas_but,    EVENT_PRESS | EVENT_RELEASE);
+  SimbleeForMobile.setEvents(scanner_but,      EVENT_PRESS | EVENT_RELEASE);
 
   // Sliders also take up 45 vertical px
 
@@ -187,7 +198,8 @@ void ui()
   //brightness_slider = SimbleeForMobile.drawSlider(25, 270, 135, 0, 255);
   // Instead reset Arduino button
 
-  SimbleeForMobile.drawButton(10, 240, 300, "Reset Arduino", BLACK);
+  reset_arduino = SimbleeForMobile.drawButton(10, 240, 300, "Reset Arduino", BLACK);
+  SimbleeForMobile.setEvents(reset_arduino, EVENT_PRESS | EVENT_RELEASE);
 
   
   SimbleeForMobile.drawText(10, 315, "Speed");
@@ -233,7 +245,7 @@ void ui_event(event_t &event)
     // If/else split should be good here
   } else if (event.type == EVENT_PRESS) {
     if (event.id == off_but) {
-      send_change(PATTERN, NONE);
+      send_change(PATTERN, NO_PATTERN);
 
     } else if (event.id == solid_but) {
       send_change(PATTERN, SOLID);
@@ -258,6 +270,12 @@ void ui_event(event_t &event)
 
     } else if (event.id == christmas_but) {
       send_change(PATTERN, CHRISTMAS);
+
+    } else if (event.id == scanner_but) {
+      send_change(PATTERN, SCAN);
+      
+    } else if (event.id == reset_arduino) {
+      resetArduino();
       
     }
   }
@@ -275,7 +293,17 @@ void send_change(uint8_t indicator, uint8_t value) {
   //Serial.println(FILLER, BIN);
 }
 
+/*
 void send_color(uint8_t indicator, uint8_t value) {
   
+}
+*/
+
+void resetArduino() {
+  digitalWrite(RESET_ARDUINO, HIGH);
+  delay(1);
+  digitalWrite(RESET_ARDUINO, LOW);
+  delay(10);
+  digitalWrite(RESET_ARDUINO, HIGH);
 }
 

@@ -4,6 +4,37 @@
 
 #define PIN 5
 
+///////////////////////////////////////////// // Communication variables
+
+byte PATTERN = 0x00;      // What pattern:
+byte BRIGHTNESS = 0x01; //
+byte RATE = 0x02;       // How fast
+byte SIZE = 0x03;       // How large
+byte COLOR_R = 0x04;      // What color
+byte COLOR_G = 0x05;      // What color
+byte COLOR_B = 0x06;      // What color
+
+byte NO_PATTERN 0x00
+byte RAINBOW_TIME 0x01
+byte RAINBOW_SPACE 0x02
+byte FLASH_COLOR 0x03
+//#define FLASH_RAINBOW 0x04
+//#define FLASH_RANDOM 0x05
+byte PULSE 0x06
+byte THEATER 0x07
+byte CHRISTMAS 0x08
+byte CANDLE 0x09
+byte SOLID 0x0A
+byte SCAN 0x0B
+
+// IF EDIT THE ABOVE MAKE SURE TO CHANGE CORRESPONDING FILE AS WELL!!!
+
+uint8_t SYNC_BYTE = 0xAA;
+
+///////////////////////////////////////////// // End communication variables
+
+
+
 
 // Pattern types supported:
 enum  pattern { NONE, RAINBOW_CYCLE, THEATER_CHASE, COLOR_WIPE, SCANNER, FADE };
@@ -313,6 +344,13 @@ void setup()
   // Initialize all the pixelStrips
   myStrip.begin();
 
+  myStrip.ActivePattern = NONE;
+  myStrip.Direction = FORWARD;
+  myStrip.Interval = 100;
+  myStrip.Color1 = Color(0, 0, 0);
+  myStrip.TotalSteps = 255;
+  myStrip.Index = 0;
+  
   // Kick off a pattern
   //myStrip.TheaterChase(myStrip.Color(255, 255, 0), myStrip.Color(0, 0, 50), 100);
   //myStrip.ColorWipe(myStrip.Color(255, 255, 255), 100);
@@ -328,7 +366,101 @@ void loop()
   // Update the rings.
   myStrip.Update();
 
-  /*
+  if (Serial.available() >= 3) {
+    btype = Serial.read();
+    if (btype != 0xAA) {  // Not the sync byte
+      // Serial.flush??
+      while (Serial.available()) {
+        Serial.read();
+      }
+    } else {  // Is the sync byte
+      indicator = Serial.read();  // 2nd byte
+      value = Serial.read();  // 3rd byte
+
+      switch (indicator) {
+        case PATTERN:
+          changePattern(value);
+          
+          break;
+        case BRIGHTNESS:
+          // For now do nothing
+          
+          break;
+        case RATE:
+          changeRate(value);
+
+          break;
+        case SIZE:
+          changeSize(value);
+
+          break;
+        case COLOR_R:
+          
+
+          break;
+        case COLOR_G:
+
+
+          break;
+        case COLOR_B:
+
+
+        
+      }
+      
+
+
+    }
+  }
+  
+}
+
+void changePattern(uint8_t value) {
+  switch (value) {
+    case NO_PATTERN:
+      myStrip.ActivePattern = NONE;
+      
+      break;
+    case RAINBOW_TIME:
+      myStrip.ActivePattern = 
+      
+      break;
+    case RAINBOW_SPACE:
+      myStrip.ActivePattern = RAINBOW_CYCLE;
+    
+      break;
+    case FLASH_COLOR:
+      myStrip.ActivePattern = 
+    
+      break;
+    case PULSE:
+      myStrip.ActivePattern = FADE;
+    
+      break;
+    case THEATER:
+      myStrip.ActivePattern = THEATER_CHASE;
+    
+      break;
+    case CHRISTMAS:
+      myStrip.ActivePattern = 
+    
+      break;
+    case CANDLE:
+      myStrip.ActivePattern = 
+    
+      break;
+    case SOLID:
+      myStrip.ActivePattern = 
+
+    
+    
+  }
+  
+  
+}
+
+
+ /*
       // Switch patterns on a button press:
       if (digitalRead(8) == LOW) // Button #1 pressed
       {
@@ -361,26 +493,6 @@ void loop()
           Stick.Update();
       }*/
 
-  if (Serial.available() >= 3) {
-    btype = Serial.read();
-    if (btype != 0xAA) {  // Not the sync byte
-      // Serial.flush??
-      while (Serial.available()) {
-        Serial.read();
-      }
-    } else {  // Is the sync byte
-      indicator = Serial.read();  // 2nd byte
-      value = Serial.read();  // 3rd byte
-
-      switch (indicator) {
-        case 
-      }
-      
-
-
-    }
-  }
-}
 
 //------------------------------------------------------------
 //Completion Routines - get called on completion of a pattern
