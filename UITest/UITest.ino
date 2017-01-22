@@ -116,6 +116,8 @@ uint8_t theater_but;
 uint8_t christmas_but;
 uint8_t scanner_but;
 
+
+
 void loop() {
   // todo: delay_until_button(HIGH);
   // todo: SimbleeBLE.send(1);
@@ -190,6 +192,10 @@ void ui()
   SimbleeForMobile.setEvents(candle_but,       EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(theater_but,      EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(christmas_but,    EVENT_PRESS | EVENT_RELEASE);
+
+  
+
+
 
   SimbleeForMobile.endScreen();
 }

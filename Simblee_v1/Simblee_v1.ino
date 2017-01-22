@@ -37,6 +37,7 @@ modified when reconnected.
 #define THEATER_CHASE 0x07
 #define CHRISTMAS 0x08
 #define FLICKER 0x09
+#define SOLID 0x0A
 
 
 uint8_t SYNC_BYTE = 0xAA;
@@ -94,6 +95,18 @@ void loop() {
   SimbleeForMobile.process();
 }
 
+
+void SimbleeForMobile_onConnect() {
+  greenLedOn();
+}
+
+void SimbleeForMobile_onDisconnect() {
+  redLedOn();
+}
+
+void update();
+
+
 uint8_t off_but;
 uint8_t solid_but;
 uint8_t pulse_but;
@@ -107,15 +120,9 @@ uint8_t theater_but;
 uint8_t christmas_but;
 uint8_t scanner_but;
 
-void SimbleeForMobile_onConnect() {
-  greenLedOn();
-}
+uint8_t brightness_slider;
+uint8_t rate_slider;
 
-void SimbleeForMobile_onDisconnect() {
-  redLedOn();
-}
-
-void update();
 
 void ui()
 {
@@ -163,20 +170,37 @@ void ui()
   SimbleeForMobile.setEvents(theater_but,      EVENT_PRESS | EVENT_RELEASE);
   SimbleeForMobile.setEvents(christmas_but,    EVENT_PRESS | EVENT_RELEASE);
 
-  SimbleeForMobile.endScreen();
+  // Sliders also take up 45 vertical px
 
+  SimbleeForMobile.drawText(10, 240, "Brightness:");
+  // Not implemented yet, not sure how to change brightness
+  brightness_slider = SimbleeForMobile.drawSlider(25, 270, 0, 255, WHITE);
+  
+  SimbleeForMobile.drawText(10, 315, "Speed"):
+  // Min and Max will probably change
+  rate_slider = SimbleeForMobile.drawSlider(25, 345, 1, 255, WHITE);
+
+
+  SimbleeForMobile.endScreen();
 }
 
 
 void ui_event(event_t &event)
 {
 
-  if (event.type == EVENT_PRESS) {
+  if (event.id == brightness_slider) {
+    // Do nothing for now
+  } else if (event.id == rate_slider) {
+    send_change(RATE, (byte)event.id)
+
+
+    // If/else split should be good here
+  } else if (event.type == EVENT_PRESS) {
     if (event.id == off_but) {
-      digitalWrite(BLUE_LED, LOW);
+      send_change(NONE, 0);
 
     } else if (event.id == solid_but) {
-      digitalWrite(BLUE_LED, HIGH);
+      send_change(SOLID, 
 
     } else if (event.id == pulse_but) {
       digitalWrite(BLUE_LED, HIGH);
