@@ -6,26 +6,26 @@
 
 ///////////////////////////////////////////// // Communication variables
 
-byte PATTERN = 0x00;      // What pattern:
-byte BRIGHTNESS = 0x01; //
-byte RATE = 0x02;       // How fast
-byte SIZE = 0x03;       // How large
-byte COLOR_R = 0x04;      // What color
-byte COLOR_G = 0x05;      // What color
-byte COLOR_B = 0x06;      // What color
+#define PATTERN 0x00      // What pattern:
+#define BRIGHTNESS 0x01 //
+#define RATE 0x02       // How fast
+#define SIZE 0x03        // How large
+#define COLOR_R 0x04      // What color
+#define COLOR_G 0x05      // What color
+#define COLOR_B 0x06      // What color
 
-byte NO_PATTERN 0x00
-byte RAINBOW_TIME 0x01
-byte RAINBOW_SPACE 0x02
-byte FLASH_COLOR 0x03
+#define NO_PATTERN 0x00
+#define RAINBOW_TIME 0x01
+#define RAINBOW_SPACE 0x02
+#define FLASH_COLOR 0x03
 //#define FLASH_RAINBOW 0x04
 //#define FLASH_RANDOM 0x05
-byte PULSE 0x06
-byte THEATER 0x07
-byte CHRISTMAS 0x08
-byte CANDLE 0x09
-byte SOLID 0x0A
-byte SCAN 0x0B
+#define PULSE 0x06
+#define THEATER 0x07
+#define CHRISTMAS 0x08
+#define CANDLE 0x09
+#define SOLID_COLOR 0x0A
+#define SCAN 0x0B
 
 // IF EDIT THE ABOVE MAKE SURE TO CHANGE CORRESPONDING FILE AS WELL!!!
 
@@ -34,12 +34,13 @@ uint8_t SYNC_BYTE = 0xAA;
 ///////////////////////////////////////////// // End communication variables
 
 
-
-
 // Pattern types supported:
-enum  pattern { NONE, RAINBOW_CYCLE, THEATER_CHASE, COLOR_WIPE, SCANNER, FADE };
+enum  pattern {  NONE, RAINBOW_CYCLE, THEATER_CHASE, COLOR_WIPE, SCANNER, FADE, SOLID };
+
+
 // Patern directions supported:
 enum  direction { FORWARD, REVERSE };
+  
 
 // NeoPattern Class - derived from the Adafruit_NeoPixel class
 class NeoPatterns : public Adafruit_NeoPixel
@@ -58,6 +59,13 @@ class NeoPatterns : public Adafruit_NeoPixel
     uint16_t Index;  // current step within the pattern
 
     void (*OnComplete)();  // Callback on completion of pattern
+
+    //////// Added by me
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+
+    //////// End added by me
 
     // Constructor - calls base-class constructor to initialize strip
     NeoPatterns(uint16_t pixels, uint8_t pin, uint8_t type, void (*callback)())
@@ -159,6 +167,31 @@ class NeoPatterns : public Adafruit_NeoPixel
       show();
       Increment();
     }
+
+//////////////////////////////////// Start of my patterns
+
+
+    void Solid() {
+      ActivePattern = SOLID;
+      Interval = 5;
+      TotalSteps = 2; // Doesnt matter right?
+      Index = 0;
+      Direction = FORWARD;
+    }
+
+    void SolidUpdate() {
+      for (int i = 0; i < numPixels(); i++) {
+        setPixelColor(i, red, green, blue);
+      }
+      
+    }
+
+
+
+
+
+//////////////////////////////////// End of my patterns
+
 
     // Initialize for a Theater Chase
     void TheaterChase(uint32_t color1, uint32_t color2, uint8_t interval, direction dir = FORWARD)
@@ -347,7 +380,7 @@ void setup()
   myStrip.ActivePattern = NONE;
   myStrip.Direction = FORWARD;
   myStrip.Interval = 100;
-  myStrip.Color1 = Color(0, 0, 0);
+  myStrip.Color1 = myStrip.Color(0, 0, 0);
   myStrip.TotalSteps = 255;
   myStrip.Index = 0;
   
@@ -359,6 +392,9 @@ void setup()
 
 }
 
+byte btype;
+byte indicator;
+byte value;
 
 // Main loop
 void loop()
@@ -404,7 +440,7 @@ void loop()
           break;
         case COLOR_B:
 
-
+          break;
         
       }
       
@@ -421,18 +457,18 @@ void changePattern(uint8_t value) {
       myStrip.ActivePattern = NONE;
       
       break;
-    case RAINBOW_TIME:
-      myStrip.ActivePattern = 
-      
-      break;
+//    case RAINBOW_TIME:
+//      myStrip.ActivePattern = 
+//      
+//      break;
     case RAINBOW_SPACE:
       myStrip.ActivePattern = RAINBOW_CYCLE;
     
       break;
-    case FLASH_COLOR:
-      myStrip.ActivePattern = 
-    
-      break;
+//    case FLASH_COLOR:
+//      myStrip.ActivePattern = 
+//    
+//      break;
     case PULSE:
       myStrip.ActivePattern = FADE;
     
@@ -441,24 +477,35 @@ void changePattern(uint8_t value) {
       myStrip.ActivePattern = THEATER_CHASE;
     
       break;
-    case CHRISTMAS:
-      myStrip.ActivePattern = 
-    
-      break;
-    case CANDLE:
-      myStrip.ActivePattern = 
-    
-      break;
-    case SOLID:
-      myStrip.ActivePattern = 
+//    case CHRISTMAS:
+//      myStrip.ActivePattern = 
+//    
+//      break;
+//    case CANDLE:
+//      myStrip.ActivePattern = 
+//    
+//      break;
+    case SOLID_COLOR:
+      myStrip.ActivePattern = SOLID;
 
-    
-    
+      break;
+    case SCAN:
+      myStrip.ActivePattern = SCAN;
+
+      break;
+      
   }
-  
   
 }
 
+
+void changeRate(uint8_t value) {
+  
+}
+
+void changeSize(uint8_t value) {
+  // Right now dont do anything
+}
 
  /*
       // Switch patterns on a button press:
