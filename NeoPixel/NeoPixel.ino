@@ -40,7 +40,7 @@ enum  pattern {  NONE, RAINBOW_CYCLE, THEATER_CHASE, COLOR_WIPE, SCANNER, FADE, 
 
 // Patern directions supported:
 enum  direction { FORWARD, REVERSE };
-  
+
 
 // NeoPattern Class - derived from the Adafruit_NeoPixel class
 class NeoPatterns : public Adafruit_NeoPixel
@@ -96,6 +96,9 @@ class NeoPatterns : public Adafruit_NeoPixel
             break;
           case FADE:
             FadeUpdate();
+            break;
+          case SOLID:
+            SolidUpdate();
             break;
           default:
             break;
@@ -170,6 +173,20 @@ class NeoPatterns : public Adafruit_NeoPixel
 
 //////////////////////////////////// Start of my patterns
 
+    // Sets the strip's Color1 to the combination of 8 bit red, green and blue
+    void setColor() {
+      Color1 = Color(red, green, blue);
+    }
+
+    void resetStrip() {
+      myStrip.ActivePattern = NONE;
+      myStrip.Direction = FORWARD;
+      myStrip.Interval = 100;
+      myStrip.Color1 = myStrip.Color(0, 0, 0);
+      myStrip.TotalSteps = 255;
+      myStrip.Index = 0;
+    }
+
 
     void Solid() {
       ActivePattern = SOLID;
@@ -183,7 +200,8 @@ class NeoPatterns : public Adafruit_NeoPixel
       for (int i = 0; i < numPixels(); i++) {
         setPixelColor(i, red, green, blue);
       }
-      
+      show();
+      Increment();
     }
 
 
@@ -291,11 +309,11 @@ class NeoPatterns : public Adafruit_NeoPixel
     {
       // Calculate linear interpolation between Color1 and Color2
       // Optimise order of operations to minimize truncation error
-      uint8_t red = ((Red(Color1) * (TotalSteps - Index)) + (Red(Color2) * Index)) / TotalSteps;
-      uint8_t green = ((Green(Color1) * (TotalSteps - Index)) + (Green(Color2) * Index)) / TotalSteps;
-      uint8_t blue = ((Blue(Color1) * (TotalSteps - Index)) + (Blue(Color2) * Index)) / TotalSteps;
+      uint8_t red1 = ((Red(Color1) * (TotalSteps - Index)) + (Red(Color2) * Index)) / TotalSteps;
+      uint8_t green1 = ((Green(Color1) * (TotalSteps - Index)) + (Green(Color2) * Index)) / TotalSteps;
+      uint8_t blue1 = ((Blue(Color1) * (TotalSteps - Index)) + (Blue(Color2) * Index)) / TotalSteps;
 
-      ColorSet(Color(red, green, blue));
+      ColorSet(Color(red1, green1, blue1));
       show();
       Increment();
     }
@@ -377,13 +395,8 @@ void setup()
   // Initialize all the pixelStrips
   myStrip.begin();
 
-  myStrip.ActivePattern = NONE;
-  myStrip.Direction = FORWARD;
-  myStrip.Interval = 100;
-  myStrip.Color1 = myStrip.Color(0, 0, 0);
-  myStrip.TotalSteps = 255;
-  myStrip.Index = 0;
-  
+  myStrip.resetStrip(); // All off
+
   // Kick off a pattern
   //myStrip.TheaterChase(myStrip.Color(255, 255, 0), myStrip.Color(0, 0, 50), 100);
   //myStrip.ColorWipe(myStrip.Color(255, 255, 255), 100);
@@ -416,11 +429,11 @@ void loop()
       switch (indicator) {
         case PATTERN:
           changePattern(value);
-          
+
           break;
         case BRIGHTNESS:
           // For now do nothing
-          
+
           break;
         case RATE:
           changeRate(value);
@@ -431,60 +444,64 @@ void loop()
 
           break;
         case COLOR_R:
-          
+          myStrip.red = value;
+          myStrip.setColor();
 
           break;
         case COLOR_G:
-
+          myStrip.green = value;
+          myStrip.setColor();
 
           break;
         case COLOR_B:
+          myStrip.blue = value;
+          myStrip.setColor();
 
           break;
-        
+
       }
-      
+
 
 
     }
   }
-  
+
 }
 
 void changePattern(uint8_t value) {
   switch (value) {
     case NO_PATTERN:
       myStrip.ActivePattern = NONE;
-      
+
       break;
-//    case RAINBOW_TIME:
-//      myStrip.ActivePattern = 
-//      
-//      break;
+    //    case RAINBOW_TIME:
+    //      myStrip.ActivePattern =
+    //
+    //      break;
     case RAINBOW_SPACE:
       myStrip.ActivePattern = RAINBOW_CYCLE;
-    
+
       break;
-//    case FLASH_COLOR:
-//      myStrip.ActivePattern = 
-//    
-//      break;
+    //    case FLASH_COLOR:
+    //      myStrip.ActivePattern =
+    //
+    //      break;
     case PULSE:
       myStrip.ActivePattern = FADE;
-    
+
       break;
     case THEATER:
       myStrip.ActivePattern = THEATER_CHASE;
-    
+
       break;
-//    case CHRISTMAS:
-//      myStrip.ActivePattern = 
-//    
-//      break;
-//    case CANDLE:
-//      myStrip.ActivePattern = 
-//    
-//      break;
+    //    case CHRISTMAS:
+    //      myStrip.ActivePattern =
+    //
+    //      break;
+    //    case CANDLE:
+    //      myStrip.ActivePattern =
+    //
+    //      break;
     case SOLID_COLOR:
       myStrip.ActivePattern = SOLID;
 
@@ -493,52 +510,52 @@ void changePattern(uint8_t value) {
       myStrip.ActivePattern = SCAN;
 
       break;
-      
+
   }
-  
+
 }
 
 
 void changeRate(uint8_t value) {
-  
+
 }
 
 void changeSize(uint8_t value) {
   // Right now dont do anything
 }
 
- /*
-      // Switch patterns on a button press:
-      if (digitalRead(8) == LOW) // Button #1 pressed
-      {
-          // Switch Ring1 to FASE pattern
-          Ring1.ActivePattern = FADE;
-          Ring1.Interval = 20;
-          // Speed up the rainbow on Ring2
-          Ring2.Interval = 0;
-          // Set stick to all red
-          Stick.ColorSet(Stick.Color(255, 0, 0));
-      }
-      else if (digitalRead(9) == LOW) // Button #2 pressed
-      {
-          // Switch to alternating color wipes on Rings1 and 2
-          Ring1.ActivePattern = COLOR_WIPE;
-          Ring2.ActivePattern = COLOR_WIPE;
-          Ring2.TotalSteps = Ring2.numPixels();
-          // And update tbe stick
-          Stick.Update();
-      }
-      else // Back to normal operation
-      {
-          // Restore all pattern parameters to normal values
-          Ring1.ActivePattern = THEATER_CHASE;
-          Ring1.Interval = 100;
-          Ring2.ActivePattern = RAINBOW_CYCLE;
-          Ring2.TotalSteps = 255;
-          Ring2.Interval = min(10, Ring2.Interval);
-          // And update tbe stick
-          Stick.Update();
-      }*/
+/*
+     // Switch patterns on a button press:
+     if (digitalRead(8) == LOW) // Button #1 pressed
+     {
+         // Switch Ring1 to FASE pattern
+         Ring1.ActivePattern = FADE;
+         Ring1.Interval = 20;
+         // Speed up the rainbow on Ring2
+         Ring2.Interval = 0;
+         // Set stick to all red
+         Stick.ColorSet(Stick.Color(255, 0, 0));
+     }
+     else if (digitalRead(9) == LOW) // Button #2 pressed
+     {
+         // Switch to alternating color wipes on Rings1 and 2
+         Ring1.ActivePattern = COLOR_WIPE;
+         Ring2.ActivePattern = COLOR_WIPE;
+         Ring2.TotalSteps = Ring2.numPixels();
+         // And update tbe stick
+         Stick.Update();
+     }
+     else // Back to normal operation
+     {
+         // Restore all pattern parameters to normal values
+         Ring1.ActivePattern = THEATER_CHASE;
+         Ring1.Interval = 100;
+         Ring2.ActivePattern = RAINBOW_CYCLE;
+         Ring2.TotalSteps = 255;
+         Ring2.Interval = min(10, Ring2.Interval);
+         // And update tbe stick
+         Stick.Update();
+     }*/
 
 
 //------------------------------------------------------------
@@ -550,22 +567,22 @@ void changeSize(uint8_t value) {
 void myStripComplete()
 {
   /*if (digitalRead(9) == LOW)  // Button #2 pressed
-  {
+    {
     // Alternate color-wipe patterns with Ring2
     Ring2.Interval = 40;
     Ring1.Color1 = Ring1.Wheel(random(255));
     Ring1.Interval = 20000;
-  }
-  else  // Retrn to normal
-  {*/
-    myStrip.Reverse();
+    }
+    else  // Retrn to normal
+    {*/
+  myStrip.Reverse();
   //}
 }
 
 /*
-// Ring 2 Completion Callback
-void Ring2Complete()
-{
+  // Ring 2 Completion Callback
+  void Ring2Complete()
+  {
   if (digitalRead(9) == LOW)  // Button #2 pressed
   {
     // Alternate color-wipe patterns with Ring1
@@ -577,13 +594,13 @@ void Ring2Complete()
   {
     Ring2.RainbowCycle(random(0, 10));
   }
-}
+  }
 
-// Stick Completion Callback
-void StickComplete()
-{
+  // Stick Completion Callback
+  void StickComplete()
+  {
   // Random color change for next scan
   Stick.Color1 = Stick.Wheel(random(255));
-}
+  }
 
 */
