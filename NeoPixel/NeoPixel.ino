@@ -174,17 +174,27 @@ class NeoPatterns : public Adafruit_NeoPixel
 //////////////////////////////////// Start of my patterns
 
     // Sets the strip's Color1 to the combination of 8 bit red, green and blue
-    void setColor() {
+    void setColor1() {
       Color1 = Color(red, green, blue);
     }
 
+    void setColor2() {
+      Color2 = Color(red, green, blue);
+    }
+
     void resetStrip() {
-      myStrip.ActivePattern = NONE;
+/*      myStrip.ActivePattern = NONE;
       myStrip.Direction = FORWARD;
       myStrip.Interval = 100;
       myStrip.Color1 = myStrip.Color(0, 0, 0);
       myStrip.TotalSteps = 255;
-      myStrip.Index = 0;
+      myStrip.Index = 0;*/
+      ActivePattern = NONE;
+      Direction = FORWARD;
+      Interval = 100;
+      Color1 = Color(0, 0, 0);
+      TotalSteps = 255;
+      Index = 0;
     }
 
 
@@ -445,17 +455,17 @@ void loop()
           break;
         case COLOR_R:
           myStrip.red = value;
-          myStrip.setColor();
+          myStrip.setColor1();
 
           break;
         case COLOR_G:
           myStrip.green = value;
-          myStrip.setColor();
+          myStrip.setColor1();
 
           break;
         case COLOR_B:
           myStrip.blue = value;
-          myStrip.setColor();
+          myStrip.setColor1();
 
           break;
 
@@ -491,6 +501,11 @@ void changePattern(uint8_t value) {
 
       break;
     case THEATER:
+      myStrip.red = 0;
+      myStrip.green = 0;
+      myStrip.blue = 0;
+      myStrip.setColor2();
+    
       myStrip.ActivePattern = THEATER_CHASE;
 
       break;
@@ -507,7 +522,22 @@ void changePattern(uint8_t value) {
 
       break;
     case SCAN:
-      myStrip.ActivePattern = SCAN;
+      myStrip.ActivePattern = SCANNER;
+
+      break;
+    case CHRISTMAS:
+      myStrip.red = 255;
+      myStrip.green = 0;
+      myStrip.blue = 0;
+      myStrip.setColor1();
+
+      myStrip.red = 0;
+      myStrip.green = 255;
+      myStrip.blue = 0;
+      myStrip.setColor2();
+      
+      myStrip.TheaterChase(myStrip.Color1, myStrip.Color2, myStrip.Interval);
+
 
       break;
 
@@ -517,7 +547,7 @@ void changePattern(uint8_t value) {
 
 
 void changeRate(uint8_t value) {
-
+  myStrip.Interval = value;
 }
 
 void changeSize(uint8_t value) {
