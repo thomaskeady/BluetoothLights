@@ -174,12 +174,18 @@ class NeoPatterns : public Adafruit_NeoPixel
 //////////////////////////////////// Start of my patterns
 
     // Sets the strip's Color1 to the combination of 8 bit red, green and blue
-    void setColor1() {
-      Color1 = Color(red, green, blue);
+    void setColor1(uint8_t re, uint8_t gr, uint8_t bl) {
+      red = re;
+      green = gr;
+      blue = bl;
+      Color1 = Color(re, gr, bl);
     }
 
-    void setColor2() {
-      Color2 = Color(red, green, blue);
+    void setColor2(uint8_t re, uint8_t gr, uint8_t bl) {
+      red = re;
+      green = gr;
+      blue = bl;
+      Color2 = Color(re, gr, bl);
     }
 
     void resetStrip() {
@@ -455,17 +461,17 @@ void loop()
           break;
         case COLOR_R:
           myStrip.red = value;
-          myStrip.setColor1();
+          myStrip.setColor1(value, myStrip.green, myStrip.blue);
 
           break;
         case COLOR_G:
           myStrip.green = value;
-          myStrip.setColor1();
+          myStrip.setColor1(myStrip.red, value, myStrip.blue);
 
           break;
         case COLOR_B:
           myStrip.blue = value;
-          myStrip.setColor1();
+          myStrip.setColor1(myStrip.red, myStrip.green, value);
 
           break;
 
@@ -481,7 +487,8 @@ void loop()
 void changePattern(uint8_t value) {
   switch (value) {
     case NO_PATTERN:
-      myStrip.ActivePattern = NONE;
+      myStrip.setColor1(0, 0, 0);
+      myStrip.ActivePattern = SOLID;
 
       break;
     //    case RAINBOW_TIME:
@@ -501,11 +508,7 @@ void changePattern(uint8_t value) {
 
       break;
     case THEATER:
-      myStrip.red = 0;
-      myStrip.green = 0;
-      myStrip.blue = 0;
-      myStrip.setColor2();
-    
+      myStrip.setColor2(0, 0, 0);
       myStrip.ActivePattern = THEATER_CHASE;
 
       break;
@@ -526,19 +529,10 @@ void changePattern(uint8_t value) {
 
       break;
     case CHRISTMAS:
-      myStrip.red = 255;
-      myStrip.green = 0;
-      myStrip.blue = 0;
-      myStrip.setColor1();
-
-      myStrip.red = 0;
-      myStrip.green = 255;
-      myStrip.blue = 0;
-      myStrip.setColor2();
+      myStrip.setColor1(255, 0, 0);
+      myStrip.setColor2(0, 255, 0);
       
       myStrip.TheaterChase(myStrip.Color1, myStrip.Color2, myStrip.Interval);
-
-
       break;
 
   }
