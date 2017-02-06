@@ -541,7 +541,7 @@ void changePattern(uint8_t value) {
 
 
 void changeRate(uint8_t value) {
-  myStrip.Interval = value;
+  myStrip.Interval = 256 - value;
 }
 
 void changeSize(uint8_t value) {

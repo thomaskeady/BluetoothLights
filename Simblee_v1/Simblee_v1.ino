@@ -204,7 +204,7 @@ void ui()
   
   SimbleeForMobile.drawText(10, 315, "Speed");
   // Min and Max will probably change
-  rate_slider = SimbleeForMobile.drawSlider(25, 345, 270, 255, 1);
+  rate_slider = SimbleeForMobile.drawSlider(25, 345, 270, 1, 255);
 
   SimbleeForMobile.drawText(10, 390, "Color");
 
